@@ -1,56 +1,20 @@
-# Python
+# Ignore virtual environment
+/myenv
+
+# Node package lock file (if using npm for frontend)
+/package-lock.json
+
+# Python cache
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
 
-# Virtual environment
-myenv/
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Node
-node_modules/
-package-lock.json
-
-# Logs and databases
-*.log
-*.sqlite
-
-# OS generated files
+# OS files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
 
-# Custom
+# Ignore uploads if they are temporary
 static/uploads/
+
+# Bytecode and logs
+*.log
+*.pyc
+*.pyo

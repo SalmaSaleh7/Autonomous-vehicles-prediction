@@ -1,14 +1,11 @@
-# Use official ultralytics image with dependencies pre-installed
 FROM ultralytics/ultralytics:latest
 
-# Environment variables to prevent Python buffering and pycache creation
+# Prevent Python buffering and pycache
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
-# Set working directory inside the container
-WORKDIR /app
-
-# Install extra system dependencies for image processing
+# Install system deps first (cached unless changed)
 RUN apt-get update && apt-get install -y \
     gcc \
     ffmpeg \
@@ -18,23 +15,23 @@ RUN apt-get update && apt-get install -y \
     libxrender-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy only requirements first to leverage Docker cache
+# Set working directory
+WORKDIR /app
+
+# Copy ONLY requirements.txt first (for layer caching)
 COPY requirements.txt .
 
-# Upgrade pip and install dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Install Python deps with pinned versions and no cache
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application files
+# Copy the rest of the app (changes here won't trigger pip reinstall)
 COPY . .
 
-# Create upload directory
-RUN mkdir -p static/uploads
+# Create uploads dir (avoid permission issues)
+RUN mkdir -p static/uploads && chmod -R 777 static/uploads
 
-# Expose port 8080 (you can change to 5000 if you prefer)
+# Runtime settings
 EXPOSE 8080
-
-# Use PORT environment variable from Railway or default to 8080
-ENV PORT 8080
-
-# Run your app binding to 0.0.0.0 and using the Railway port environment variable
+ENV PORT=8080
 CMD ["sh", "-c", "python app.py --host=0.0.0.0 --port=$PORT"]

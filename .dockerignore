@@ -1,36 +1,24 @@
-# Git
-.git/
-.gitignore
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Virtual environment
+# Ignore virtual environments
 myenv/
 venv/
-env/
 
-# IDE
-.idea/
-.vscode/
+# Ignore Python cache
+__pycache__/
+*.py[cod]
 
-# Logs and databases
-*.log
-*.sqlite
-
-# OS generated files
+# Ignore OS-specific files
 .DS_Store
 
-# Build and distribution
-build/
-dist/
-*.egg-info/
+# Ignore version control
+.git
+.gitignore
 
-# Node
-node_modules/
+# Ignore Docker and Compose config (optional if not needed inside container)
+.dockerignore
+docker-compose.yml
 
-# Uploads directory (will be created in container)
+# Ignore uploads directory if not needed in image
 static/uploads/
+
+# Ignore logs and system files
+*.log
