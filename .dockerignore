@@ -1,14 +1,36 @@
+# Git
+.git/
+.gitignore
+
+# Python
 __pycache__/
 *.pyc
-*.pkl
-*.pt
-*.h5
-*.zip
-*.tar
-*.gz
-.env
-venv/
+*.pyo
+*.pyd
+
+# Virtual environment
 myenv/
-.DS_Store
+venv/
+env/
+
+# IDE
 .idea/
+.vscode/
+
+# Logs and databases
 *.log
+*.sqlite
+
+# OS generated files
+.DS_Store
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+
+# Node
+node_modules/
+
+# Uploads directory (will be created in container)
+static/uploads/
