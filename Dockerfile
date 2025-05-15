@@ -1,14 +1,14 @@
-# Use official Python image
-FROM python:3.10-slim
+# Use official ultralytics image with dependencies pre-installed
+FROM ultralytics/ultralytics:latest
 
-# Set environment variables
+# Environment variables to prevent Python buffering and pycache creation
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Install system dependencies
+# Install extra system dependencies for image processing
 RUN apt-get update && apt-get install -y \
     gcc \
     ffmpeg \
@@ -18,18 +18,23 @@ RUN apt-get update && apt-get install -y \
     libxrender-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy dependency list and install Python packages
+# Copy only requirements first to leverage Docker cache
 COPY requirements.txt .
+
+# Upgrade pip and install dependencies
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy the rest of the app
+# Copy the rest of the application files
 COPY . .
 
-# Create necessary folders
+# Create upload directory
 RUN mkdir -p static/uploads
 
-# Expose the port Flask will run on
+# Expose port 8080 (you can change to 5000 if you prefer)
 EXPOSE 8080
 
-# Run the Flask app
-CMD ["python", "app.py"]
+# Use PORT environment variable from Railway or default to 8080
+ENV PORT 8080
+
+# Run your app binding to 0.0.0.0 and using the Railway port environment variable
+CMD ["sh", "-c", "python app.py --host=0.0.0.0 --port=$PORT"]
