@@ -1,0 +1,20 @@
+
+path: coco_dataset/yolo_format
+train: images/train
+val: images/val
+test: images/test
+
+nc: 12
+names:
+  - obstacles
+  - biker
+  - car
+  - pedestrian
+  - trafficLight
+  - trafficLight-Green
+  - trafficLight-GreenLeft
+  - trafficLight-Red
+  - trafficLight-RedLeft
+  - trafficLight-Yellow
+  - trafficLight-YellowLeft
+  - truck
