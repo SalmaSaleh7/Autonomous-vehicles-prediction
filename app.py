@@ -2,6 +2,7 @@ import os
 import uuid
 from flask import Flask, render_template, request, redirect, url_for
 from ultralytics import YOLO
+import cv2  # for saving annotated images
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -10,7 +11,7 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 # Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Load YOLOv8 model (ensure 'best.pt' is in the project directory or provide full path)
+# Load YOLOv8 model (make sure 'best.pt' is in your project directory or update the path)
 model = YOLO('best.pt')
 
 @app.route('/')
@@ -20,10 +21,8 @@ def index():
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if request.method == 'GET':
-        # Redirect GET requests to the home page
         return redirect(url_for('index'))
 
-    # Handle POST (file upload)
     if 'file' not in request.files:
         return redirect(request.url)
 
@@ -32,33 +31,35 @@ def predict():
         return redirect(request.url)
 
     if file:
-        # Save the uploaded image
+        # Generate unique filename and save the uploaded file
         filename = f"{uuid.uuid4()}.jpg"
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
 
-        # Run YOLOv8 detection
+        # Run YOLOv8 prediction
         results = model(filepath)
-        results[0].save(filename=filepath)  # Save annotated image in-place
 
-        # Extract labels from detections
+        # Get annotated image as numpy array and save it to the same filepath
+        annotated_img = results[0].plot()
+        cv2.imwrite(filepath, annotated_img)
+
+        # Extract detected object labels
         labels_dict = results[0].names
         boxes = results[0].boxes
         detected_objects = []
-
         for box in boxes:
             class_id = int(box.cls[0])
             label = labels_dict[class_id]
             detected_objects.append(label)
 
+        # Render result page with image and detected objects
         return render_template('result.html', user_image=filename, detected_objects=detected_objects)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    # Redirect to static file URL
+    # Redirect to static file URL for uploaded images
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
 if __name__ == '__main__':
-    # For Docker compatibility
+    # Run app on all interfaces, port 8080 (common for deployment)
     app.run(host="0.0.0.0", port=8080, debug=True)
-
