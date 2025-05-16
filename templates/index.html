@@ -8,24 +8,99 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
   <!-- Custom CSS -->
   <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
 </head>
 <body>
   <div class="container py-5">
-
-    <h1 class="text-center mb-5 fw-bold">YOLOv8 Real-Time Object Detection</h1>
-
-    <form method="POST" action="/predict" enctype="multipart/form-data" class="mb-4 mx-auto" style="max-width: 500px;">
-      <div class="input-group">
-        <input type="file" name="file" class="form-control" aria-label="Upload image or video" accept="image/*,video/*" required />
-        <button type="submit" class="btn btn-primary fw-semibold">Upload & Detect</button>
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white text-center py-3">
+            <h1 class="fw-bold mb-0">
+              <i class="bi bi-camera"></i> YOLOv8 Real-Time Object Detection
+            </h1>
+          </div>
+          <div class="card-body p-4">
+            <div class="text-center mb-4">
+              <p class="lead">Upload an image or video to detect objects with our YOLOv8 model</p>
+            </div>
+            
+            <form method="POST" action="/predict" enctype="multipart/form-data" class="mb-4 mx-auto" style="max-width: 600px;">
+              <div class="file-upload-container">
+                <div class="input-group">
+                  <input type="file" name="file" class="form-control form-control-lg" aria-label="Upload image or video" accept="image/*,video/*" required />
+                  <button type="submit" class="btn btn-primary btn-lg fw-semibold">
+                    <i class="bi bi-upload"></i> Upload & Detect
+                  </button>
+                </div>
+                <div class="form-text text-muted">
+                  Supported formats: JPG, PNG, MP4, AVI, MOV
+                </div>
+              </div>
+              
+              <div class="loading mt-4" id="loadingIndicator">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Processing your file. This may take a moment...</p>
+              </div>
+            </form>
+            
+            <div class="features mt-5">
+              <h3 class="text-center mb-4">Features</h3>
+              <div class="row g-4">
+                <div class="col-md-4">
+                  <div class="feature-card p-3 bg-light rounded text-center">
+                    <i class="bi bi-car-front fs-1 text-primary"></i>
+                    <h4 class="mt-3">Vehicle Detection</h4>
+                    <p>Accurately identifies cars, trucks, motorcycles and more</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="feature-card p-3 bg-light rounded text-center">
+                    <i class="bi bi-people fs-1 text-primary"></i>
+                    <h4 class="mt-3">Person Detection</h4>
+                    <p>Reliable pedestrian detection for safety applications</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="feature-card p-3 bg-light rounded text-center">
+                    <i class="bi bi-camera-video fs-1 text-primary"></i>
+                    <h4 class="mt-3">Video Processing</h4>
+                    <p>Real-time detection on video files with bounding boxes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </form>
-
+    </div>
+    
     <footer class="mt-5 text-center text-muted">
-      &copy; 2025 Autonomous Vehicle Object Detection
+      <p>
+        <i class="bi bi-car-front"></i> &copy; 2025 Autonomous Vehicle Object Detection
+      </p>
     </footer>
   </div>
+  
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Custom JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      
+      form.addEventListener('submit', function() {
+        loadingIndicator.classList.add('visible');
+      });
+    });
+  </script>
 </body>
 </html>

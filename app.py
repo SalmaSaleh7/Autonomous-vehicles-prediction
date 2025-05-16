@@ -69,11 +69,38 @@ def predict():
             
             # Use the dedicated video processing function
             logging.info(f"Processing video: {filepath}")
-            annotate_video(filepath, out_filepath, model)
-            logging.info(f"Video processing complete: {out_filepath}")
-
-            # For videos, show the annotated video file
-            return render_template('result.html', annotated_video=out_filename, is_video=True)
+            try:
+                frame_count, total_detections = annotate_video(filepath, out_filepath, model)
+                logging.info(f"Video processing complete: {out_filepath} - {frame_count} frames with {total_detections} detections")
+                
+                # Get some debug frames for preview
+                debug_frames = []
+                debug_dir = app.config['DEBUG_FOLDER']
+                debug_files = os.listdir(debug_dir)
+                
+                # Sort and get 5 evenly spaced frames for preview
+                if debug_files:
+                    debug_files.sort()
+                    if len(debug_files) > 5:
+                        step = len(debug_files) // 5
+                        preview_files = [debug_files[i*step] for i in range(5)]
+                    else:
+                        preview_files = debug_files
+                    
+                    for file in preview_files:
+                        if file.startswith("frame_") and file.endswith(".jpg"):
+                            debug_frames.append(file)
+                
+                # For videos, show the annotated video file
+                return render_template('result.html', 
+                                      annotated_video=out_filename, 
+                                      is_video=True, 
+                                      debug_frames=debug_frames,
+                                      frame_count=frame_count,
+                                      detection_count=total_detections)
+            except Exception as e:
+                logging.error(f"Error in video processing: {str(e)}")
+                return f"Error processing video: {str(e)}", 500
 
         else:
             return "Unsupported file type.", 400
