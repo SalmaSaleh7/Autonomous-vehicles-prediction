@@ -14,21 +14,14 @@
 <body>
   <div class="container py-5">
 
-    <h1 class="text-center mb-5 fw-bold ">YOLOv8 Real-Time Object Detection</h1>
+    <h1 class="text-center mb-5 fw-bold">YOLOv8 Real-Time Object Detection</h1>
 
     <form method="POST" action="/predict" enctype="multipart/form-data" class="mb-4 mx-auto" style="max-width: 500px;">
       <div class="input-group">
-        <input type="file" name="file" class="form-control" aria-label="Upload image" accept="image/*" required />
+        <input type="file" name="file" class="form-control" aria-label="Upload image or video" accept="image/*,video/*" required />
         <button type="submit" class="btn btn-primary fw-semibold">Upload & Detect</button>
       </div>
     </form>
-
-    {% if filename %}
-    <div class="text-center mt-5">
-      <h3 class="mb-3">Prediction Result</h3>
-      <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Detection Result" class="img-result img-fluid rounded shadow" />
-    </div>
-    {% endif %}
 
     <footer class="mt-5 text-center text-muted">
       &copy; 2025 Autonomous Vehicle Object Detection

@@ -13,32 +13,57 @@
 </head>
 <body>
   <div class="container py-5">
-
-    <h1 class="text-center mb-4 fw-bold ">Detection Result</h1>
-
+    
+    <h1 class="text-center mb-4 fw-bold">Detection Result</h1>
+    
     <div class="text-center mb-4">
-      <img src="{{ url_for('static', filename='uploads/' + user_image) }}" alt="Detection Result" class="img-result img-fluid rounded shadow" />
+      {% if is_video %}
+        <!-- Display annotated video -->
+        <video
+          class="img-result img-fluid rounded shadow"
+          controls
+          preload="metadata"
+          playsinline
+          width="100%"
+        >
+          <source src="{{ url_for('uploaded_file', filename=annotated_video) }}" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <p class="mt-2">
+          <a href="{{ url_for('uploaded_file', filename=annotated_video) }}" download class="btn btn-success">
+            Download Annotated Video
+          </a>
+        </p>
+      {% elif user_image %}
+        <!-- Display annotated image -->
+        <img
+          src="{{ url_for('uploaded_file', filename=user_image) }}"
+          alt="Detection Result"
+          class="img-result img-fluid rounded shadow"
+        />
+      {% else %}
+        <p class="text-muted">No media to display.</p>
+      {% endif %}
     </div>
-
-    <h3>Detected Objects</h3>
-    {% if detected_objects %}
+    
+    {% if not is_video and detected_objects %}
+      <h3>Detected Objects</h3>
       <div class="mb-4">
         {% for obj in detected_objects %}
           <span class="badge bg-success me-2 mb-2">{{ obj }}</span>
         {% endfor %}
       </div>
-    {% else %}
+    {% elif not is_video %}
       <p class="text-muted">No objects detected.</p>
     {% endif %}
-
+    
     <div class="text-center">
-      <a href="/" class="btn btn-outline-primary">Try Another Image</a>
+      <a href="{{ url_for('index') }}" class="btn btn-outline-primary">Try Another Image/Video</a>
     </div>
-
+    
     <footer class="mt-5 text-center text-muted">
       &copy; 2025 Autonomous Vehicle Object Detection
     </footer>
-
   </div>
 </body>
 </html>
