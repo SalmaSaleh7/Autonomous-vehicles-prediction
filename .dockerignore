@@ -2,11 +2,9 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-env/
+*.git
+*.DS_Store
+.env
 venv/
-.myenv/
-.idea/
-.vscode/
-*.model
-*.weights
-data/
+myenv/
+.ipynb_checkpoints/
