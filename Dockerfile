@@ -1,11 +1,11 @@
-FROM ultralytics/ultralytics:latest
+FROM python:3.10-slim
 
-# Prevent Python buffering and pycache
+# Avoid pycache & buffering
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1
 
-# Install system deps first (cached unless changed)
+# Install system deps
 RUN apt-get update && apt-get install -y \
     gcc \
     ffmpeg \
@@ -15,23 +15,17 @@ RUN apt-get update && apt-get install -y \
     libxrender-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Install pip packages
 WORKDIR /app
-
-# Copy ONLY requirements.txt first (for layer caching)
 COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Install Python deps with pinned versions and no cache
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the app (changes here won't trigger pip reinstall)
+# Copy app files
 COPY . .
 
-# Create uploads dir (avoid permission issues)
+# Create static/uploads
 RUN mkdir -p static/uploads && chmod -R 777 static/uploads
 
-# Runtime settings
 EXPOSE 8080
 ENV PORT=8080
 CMD ["sh", "-c", "python app.py --host=0.0.0.0 --port=$PORT"]

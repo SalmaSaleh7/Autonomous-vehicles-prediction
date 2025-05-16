@@ -1,24 +1,12 @@
-# Ignore virtual environments
-myenv/
-venv/
-
-# Ignore Python cache
 __pycache__/
-*.py[cod]
-
-# Ignore OS-specific files
-.DS_Store
-
-# Ignore version control
-.git
-.gitignore
-
-# Ignore Docker and Compose config (optional if not needed inside container)
-.dockerignore
-docker-compose.yml
-
-# Ignore uploads directory if not needed in image
-static/uploads/
-
-# Ignore logs and system files
-*.log
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.myenv/
+.idea/
+.vscode/
+*.model
+*.weights
+data/
