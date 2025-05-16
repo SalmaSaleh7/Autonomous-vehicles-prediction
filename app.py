@@ -1,8 +1,13 @@
 import os
 import uuid
+import logging
+import traceback
 from flask import Flask, render_template, request, redirect, url_for
 from ultralytics import YOLO
 import cv2  # for saving annotated images
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -31,29 +36,35 @@ def predict():
         return redirect(request.url)
 
     if file:
-        # Generate unique filename and save the uploaded file
-        filename = f"{uuid.uuid4()}.jpg"
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+        try:
+            # Generate unique filename and save the uploaded file
+            filename = f"{uuid.uuid4()}.jpg"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
 
-        # Run YOLOv8 prediction
-        results = model(filepath)
+            # Run YOLOv8 prediction
+            results = model(filepath)
 
-        # Get annotated image as numpy array and save it to the same filepath
-        annotated_img = results[0].plot()
-        cv2.imwrite(filepath, annotated_img)
+            # Get annotated image as numpy array and save it to the same filepath
+            annotated_img = results[0].plot()
+            cv2.imwrite(filepath, annotated_img)
 
-        # Extract detected object labels
-        labels_dict = results[0].names
-        boxes = results[0].boxes
-        detected_objects = []
-        for box in boxes:
-            class_id = int(box.cls[0])
-            label = labels_dict[class_id]
-            detected_objects.append(label)
+            # Extract detected object labels
+            labels_dict = results[0].names
+            boxes = results[0].boxes
+            detected_objects = []
+            for box in boxes:
+                class_id = int(box.cls[0])
+                label = labels_dict[class_id]
+                detected_objects.append(label)
 
-        # Render result page with image and detected objects
-        return render_template('result.html', user_image=filename, detected_objects=detected_objects)
+            # Render result page with image and detected objects
+            return render_template('result.html', user_image=filename, detected_objects=detected_objects)
+
+        except Exception as e:
+            logging.error("Error during prediction: %s", e)
+            logging.error(traceback.format_exc())
+            return "Internal Server Error during prediction. Check server logs for details.", 500
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
