@@ -167,7 +167,7 @@ This section covers how the dataset was used to train a YOLOv8 model for object 
 1. Clone the repository:
 
    ```bash
-   git clone <[repository_url](https://github.com/SalmaSaleh7/Autonomous-vehicles-prediction.git)>
+   git clone <[https://github.com/SalmaSaleh7/Autonomous-vehicles-prediction.git]>
    cd <Autonomous-vehicles-prediction>
    ```
 
